@@ -6,10 +6,12 @@ CONFIG -= app_bundle
 # CONFIG -= qt
 
 SOURCES += cpp/main.cpp \
-    cpp/wmanager.cpp
+    cpp/wmanager.cpp \
+    cpp/utile.cpp
 
 HEADERS += \
-    cpp/wmanager.h
+    cpp/wmanager.h \
+    cpp/utile.h
 
 DISTFILES += \
     qml/MyButton.qml \
