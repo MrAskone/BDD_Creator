@@ -2,18 +2,18 @@
 #define DATAPARSER_H
 
 #include <vector>
-#include <string>
+#include <QString>
 
 class Table
 {
 public:
     Table();
 
-    std::vector<std::string> colonnes() const;
+    std::vector<QString> colonnes() const;
     int nbColonnes() const;
 
 private:
-    std::vector<std::vector<std::string>> m_data;
+    std::vector<std::vector<QString>> m_data;
 
 };
 
@@ -24,7 +24,7 @@ class DataParser
 public:
     DataParser();
 
-    bool loadData(std::string nomFichier);
+    bool loadData(QString fichierUrl);
     void generatePreEntities();
     void generateMPD();
 
@@ -32,16 +32,17 @@ public:
 
 private:
     std::vector<Table> m_base;
+    Table initialCsv;
 
         // dans le generatePreEntities
-    void generatePreEntity(std::string nomEntite, std::vector<std::string> colonnesCsvInitial);
+    void generatePreEntity(QString nomEntite, std::vector<QString> colonnesCsvInitial);
 
         // dans le generateMPD
     void updateEntities();
     void updateEntity(int i);
         // &
     void generateProperties();
-    void generateProperty( std::string nomProperty, std::vector<std::string> colonnesCsvInitial);
+    void generateProperty( QString nomProperty, std::vector<QString> colonnesCsvInitial);
 
 
 };

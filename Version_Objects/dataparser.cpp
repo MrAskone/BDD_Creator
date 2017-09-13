@@ -1,10 +1,14 @@
 #include "dataparser.h"
 
-#include <QFile>
-#include <QDir>
-#include <QTextStream>
+//#include <QFile>
+//#include <QDir>
+//#include <QTextStream>
+
+//#include <QDebug>
 
 #include <QDebug>
+#include <QTextStream>
+#include <QFile>
 #include <iostream>
 
 using namespace std;
@@ -14,15 +18,15 @@ Table::Table()
 
 }
 
-vector<string> Table::colonnes() const
-{
+//vector<QString> Table::colonnes() const
+//{
 
-}
+//}
 
-int Table::nbColonnes() const
-{
+//int Table::nbColonnes() const
+//{
 
-}
+//}
 
 //-------------------------------------------------------------------
 
@@ -31,12 +35,32 @@ DataParser::DataParser()
 
 }
 
-bool DataParser::loadData(string nomFichier)
+bool DataParser::loadData(QString fichierUrl)
 {
+
+    QFile myFile (fichierUrl);
+    Table temp;
+
+    if (myFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream fluxLecture (&myFile);
+
+        while ( !fluxLecture.atEnd() )
+        {
+            qDebug() << fluxLecture.readLine();
+        }
+    }
+
+    else
+    {
+        qDebug() << fichierUrl + " could not be opened.\n";
+    }
+
+    return 0;
 
 }
 
-void DataParser::generatePreEntity(string nomEntite, std::vector<string> colonnesCsvInitial)
+void DataParser::generatePreEntity(QString nomEntite, std::vector<QString> colonnesCsvInitial)
 {
 
 }
@@ -46,7 +70,7 @@ void DataParser::updateEntity(int i)
 
 }
 
-void DataParser::generateProperty(string nomProperty, std::vector<string> colonnesCsvInitial)
+void DataParser::generateProperty(QString nomProperty, std::vector<QString> colonnesCsvInitial)
 {
 
 }
@@ -67,15 +91,15 @@ void DataParser::updateEntities()
 void DataParser::generateProperties()
 {
 
-    string entite1 ("nom_ligne_nature");
+    QString entite1 ("nom_ligne_nature");
 
-    string latitude ("latitude_wgs84");
-    string longitude ("longitude_wgs84");
-    string code_ligne ("code_ligne");
-    string nom ("nom");
-    string nature ("nature");
+    QString latitude ("latitude_wgs84");
+    QString longitude ("longitude_wgs84");
+    QString code_ligne ("code_ligne");
+    QString nom ("nom");
+    QString nature ("nature");
 
-    vector<string> colonnes_latitude_longitude { nom, code_ligne, nature, latitude, longitude};
+    vector<QString> colonnes_latitude_longitude { nom, code_ligne, nature, latitude, longitude};
 
     generateProperty ( entite1, colonnes_latitude_longitude );
 }
@@ -84,18 +108,18 @@ void DataParser::generateProperties()
 void DataParser::generatePreEntities()
 {
 
-    string ville ("ville");
-    string code_ligne ("code_ligne");
-    string nom ("nom");
-    string nature ("nature");
-    string cp ("cp");
-    string dept ("dept");
+    QString ville ("ville");
+    QString code_ligne ("code_ligne");
+    QString nom ("nom");
+    QString nature ("nature");
+    QString cp ("cp");
+    QString dept ("dept");
 
-    vector<string> colonnes_ville { ville, dept };
-    vector<string> colonnes_code_ligne { code_ligne };
-    vector<string> colonnes_nom { nom, cp, ville };
-    vector<string> colonnes_nature { nature };
-    vector<string> colonnes_dept { dept };
+    vector<QString> colonnes_ville { ville, dept };
+    vector<QString> colonnes_code_ligne { code_ligne };
+    vector<QString> colonnes_nom { nom, cp, ville };
+    vector<QString> colonnes_nature { nature };
+    vector<QString> colonnes_dept { dept };
 
 
     generatePreEntity( ville, colonnes_ville );
