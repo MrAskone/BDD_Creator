@@ -1,4 +1,4 @@
-#include "utile.h"
+#include "Parse_Manager.h"
 
 #include <QCoreApplication>
 #include <QFile>
@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
 
     QFile myFile (path);
 
+    Parse_Manager monParser;
+
     if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "nope!";
@@ -25,11 +27,12 @@ int main(int argc, char *argv[])
         qDebug() << "step one clear!";
     }
 
-    vector<QStringList> myDigitalCsv = Utile::csvToVector(path);
+    monParser.csvToVector(path);
+//    vector<QStringList> myDigitalCsv = monParser.digitalCsv();
 
-    QStringList myEntities = Utile::getEntities(myDigitalCsv);
+//    QStringList myEntities = monParser.getEntities();
 
-    qDebug() << myEntities << endl << "loaded in vector";
+//    qDebug() << myEntities << endl << "loaded in vector";
 
     return a.exec();
 }

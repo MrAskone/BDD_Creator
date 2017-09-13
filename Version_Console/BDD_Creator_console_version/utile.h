@@ -21,12 +21,6 @@ public:
     static void affichageTab(const std::vector<int>& tab);
     static void afficheTabTab (const std::vector<std::vector<int>>& tab);
 
-    // Fonction pour Bases de Données
-    static std::vector<QStringList> csvToVector(const QString &myUrl);
-    static QStringList getEntities(const std::vector<QStringList> &digitalCsv);
-
-    static std::vector<QStringList> myTableCreator (const std::vector<QStringList> &digitalCsv, const QStringList &listAttributes);
-//    static bool checkDuplicate (const vector<QStringList> &myTabSoFar, const QStringList &newEntry);
 
 };
 

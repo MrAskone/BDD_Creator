@@ -3,15 +3,14 @@ QT -= gui
 
 CONFIG += c++11
 
-TARGET = BDD_Creator_console_version
+TARGET = Version_Objects
 CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    utile.cpp \
-    Parse_Manager.cpp
+    dataparser.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -25,5 +24,4 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    utile.h \
-    Parse_Manager.h
+    dataparser.h
