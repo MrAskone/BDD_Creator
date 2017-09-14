@@ -100,6 +100,11 @@ void DataParser::afficheEntities(Table myTable) const   //ok
     myTable.displayFirstLine();
 }
 
+void DataParser::afficheEntityFromBase(int indice)
+{
+    m_base[indice].displayTable();
+}
+
 bool DataParser::loadData(string fichierUrl)            // OK
 {
 
@@ -147,7 +152,7 @@ bool DataParser::loadData(string fichierUrl)            // OK
 
 }
 
-void DataParser::generatePreEntity(string nomEntite, vector<string> colonnesCsvInitial)
+void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvInitial)
 {
     vector<string> listeAttributs = m_initialCsv.getFirstLine();
     vector<vector<string>> initialCsv = m_initialCsv.getTable();
@@ -156,39 +161,88 @@ void DataParser::generatePreEntity(string nomEntite, vector<string> colonnesCsvI
 
     bool verif = true;
 
-        for (int i(0) ; i < colonnesCsvInitial.size() ; i++)
+    for (int i(0) ; i < colonnesCsvInitial.size() ; i++)
+    {
+        if( find(listeAttributs.begin(), listeAttributs.end(), colonnesCsvInitial[i]) == listeAttributs.end())
         {
-            if( find(listeAttributs.begin(), listeAttributs.end(), colonnesCsvInitial[i]) == listeAttributs.end())
-            {
-                verif = false;
-            }
+            verif = false;
         }
+    }
 
     if (verif)
     {
         vector<int> myIndexes = m_initialCsv.indexEntites(colonnesCsvInitial);
 
-        for ( int i(0) ; i < initialCsv.size() ; i++ )
+        cout << "\nEntite created";
+        cout << "\nLes indides de l'entite sont: \t\t";
+
+        for ( int indice : myIndexes )
         {
-            for ( int j(0) ; j < newEntite.size() ; j++ )
-            {
-//                for ( int k(0) ; )
-            }
+            cout << indice << "; ";
         }
 
-        if ()
+        cout << endl;
 
+        vector<string> ligneTemp;
+        bool duplicate;
+        int ligneId (0);
+
+        for ( int ligneCsv (0) ; ligneCsv < initialCsv.size() ; ligneCsv++ )
+        {
+            duplicate = false;
+
+            for ( size_t ligneEntite (0) ; ligneEntite < newEntite.size() ; ligneEntite ++ )
+            {
+
+                ligneTemp.clear();
+
+                for ( int colonne (0) ; colonne < myIndexes.size() ; colonne++ )
+                {
+                    ligneTemp.push_back( initialCsv [ ligneCsv ] [ myIndexes [ colonne ] ] );
+                }
+
+                if( ligneTemp == newEntite [ ligneEntite ] )        // si il y a un duple, on sort de la boucle des 'j'
+                {
+                    ligneEntite = newEntite.size();
+                    duplicate = true;
+                }
+            }
+
+            if( !duplicate )
+            {
+                newEntite.push_back(vector<string>(0));
+
+                for ( int colonne (0) ; colonne < myIndexes.size() ; colonne++ )
+                {
+                    newEntite[ ligneId ].push_back ( initialCsv[ ligneCsv ][ myIndexes [colonne] ] );
+                }
+                ligneId ++;
+            }
+        }
     }
 
+    nomEntite.setTable(newEntite);
+    m_base.push_back(nomEntite);
+
+    cout << "L'entite renseigne les attributs:\t";
+    afficheEntities(nomEntite);
+    cout << "\nL'entite a une taille de:\t\t" << newEntite.size() << " lignes" << endl;
+
+    //    }
+
+    //    else
+    //    {
+    //        cout << "Some colonnes weren't found in the Csv.\n";
+    //    }
 
 }
 
-void DataParser::updateEntity(int i)
+void DataParser::updateEntity(int tableIndex)
 {
 
 }
 
-void DataParser::generateProperty(string nomProperty, vector<string> colonnesCsvInitial)
+void DataParser::generateProperty(Table nomProperty, vector<string> colonnesCsvInitial)
 {
 
 }
@@ -209,7 +263,7 @@ void DataParser::updateEntities()
 void DataParser::generateProperties()
 {
 
-    string entite1 ("nom_ligne_nature");
+    Table nom_ligne_nature;
 
     string latitude ("latitude_wgs84");
     string longitude ("longitude_wgs84");
@@ -219,25 +273,24 @@ void DataParser::generateProperties()
 
     vector<string> colonnes_latitude_longitude { nom, code_ligne, nature, latitude, longitude};
 
-    generateProperty ( entite1, colonnes_latitude_longitude );
+    generateProperty ( nom_ligne_nature, colonnes_latitude_longitude );
 }
 
 
 void DataParser::generatePreEntities()
 {
 
-    string ville ("ville");
-    string code_ligne ("code_ligne");
-    string nom ("nom");
-    string nature ("nature");
-    string cp ("cp");
-    string dept ("dept");
+    Table ville;
+    Table code_ligne;
+    Table nom;
+    Table nature;
+    Table dept;
 
-    vector<string> colonnes_ville { ville, dept };
-    vector<string> colonnes_code_ligne { code_ligne };
-    vector<string> colonnes_nom { nom, cp, ville };
-    vector<string> colonnes_nature { nature };
-    vector<string> colonnes_dept { dept };
+    vector<string> colonnes_ville { "ville", "dept" };
+    vector<string> colonnes_code_ligne { "code_ligne" };
+    vector<string> colonnes_nom { "nom", "cp", "ville" };
+    vector<string> colonnes_nature { "nature" };
+    vector<string> colonnes_dept { "dept" };
 
 
     generatePreEntity( ville, colonnes_ville );
@@ -258,5 +311,6 @@ Table DataParser::getInitialCsv()
 {
     return m_initialCsv;
 }
+
 
 

@@ -39,6 +39,8 @@ public:
     void generateMPD();
     Table getInitialCsv();
 
+    void afficheEntityFromBase(int indice);
+
     void afficheTable(Table myTable) const;
     void afficheEntities(Table myTable) const;
 
@@ -47,14 +49,14 @@ private:
     Table m_initialCsv;
 
         // dans le generatePreEntities
-    void generatePreEntity(std::string nomEntite, std::vector<std::string> colonnesCsvInitial);
+    void generatePreEntity(Table nomEntite, std::vector<std::string> colonnesCsvInitial);
 
         // dans le generateMPD
     void updateEntities();
-    void updateEntity(int i);
+    void updateEntity(int tableIndex);
         // &
     void generateProperties();
-    void generateProperty( std::string nomProperty, std::vector<std::string> colonnesCsvInitial);
+    void generateProperty( Table nomProperty, std::vector<std::string> colonnesCsvInitial);
 
 
 };

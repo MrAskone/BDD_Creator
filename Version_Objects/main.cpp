@@ -14,7 +14,10 @@ int main(int argc, char *argv[])
 
     Table initialCsv (myCsv.getInitialCsv());
 
-    myCsv.afficheTable(initialCsv);
+    myCsv.generatePreEntities();
+
+
+
 
 
     return a.exec();
