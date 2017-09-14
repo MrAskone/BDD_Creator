@@ -6,10 +6,10 @@
 
 //#include <QDebug>
 
-#include <QDebug>
-#include <QTextStream>
-#include <QFile>
 #include <iostream>
+#include <fstream>
+#include <ostream>
+#include <sstream>
 
 using namespace std;
 
@@ -18,7 +18,62 @@ Table::Table()
 
 }
 
-//vector<QString> Table::colonnes() const
+void Table::setTable(vector<vector<string>> newTable)
+{
+    m_data = newTable;
+}
+
+vector<string> Table::getFirstLine()
+{
+    return m_data[0];
+}
+
+
+vector<int> Table::indexEntites(vector<string> nomEntites)
+{
+    vector<int> myIndexes;
+
+    for (int i(0) ; i < nomEntites.size() ; i++)
+    {
+        for (int j(0) ; j < m_data[0].size() ; j++)
+        {
+            if (nomEntites[i] == m_data[0][j])
+            {
+                myIndexes.push_back(j);
+            }
+        }
+    }
+    return myIndexes;
+}
+
+
+vector<vector<string>> Table::getTable()
+{
+    return m_data;
+}
+
+void Table::displayFirstLine() const
+{
+    for ( string str : m_data[0])
+    {
+        cout << str << ";";
+    }
+}
+
+void Table::displayTable() const
+{
+    for (vector<string> v : m_data)
+    {
+        for ( string str : v)
+        {
+            cout << str << ";";
+        }
+        cout << "\n";
+    }
+}
+
+
+//vector<string> Table::colonnes() const
 //{
 
 //}
@@ -35,33 +90,96 @@ DataParser::DataParser()
 
 }
 
-bool DataParser::loadData(QString fichierUrl)
+void DataParser::afficheTable(Table myTable) const      //ok
+{
+    myTable.displayTable();
+}
+
+void DataParser::afficheEntities(Table myTable) const   //ok
+{
+    myTable.displayFirstLine();
+}
+
+bool DataParser::loadData(string fichierUrl)            // OK
 {
 
-    QFile myFile (fichierUrl);
-    Table temp;
+    bool verif = false;
 
-    if (myFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    ifstream myFile;
+    string line;
+
+    vector<vector<string>> tableTemp;
+
+    myFile.open(fichierUrl);
+
+    if (myFile.is_open())
     {
-        QTextStream fluxLecture (&myFile);
+        cout << fichierUrl << " successufully accessed.\n";
 
-        while ( !fluxLecture.atEnd() )
+        while ( getline (myFile, line) )
         {
-            qDebug() << fluxLecture.readLine();
+            istringstream streamLine(line);
+            string valeurColonne;
+
+            vector<string> colonne;
+
+            while ( getline( streamLine, valeurColonne, ';' ) )
+            {
+                colonne.push_back(valeurColonne);
+            }
+            tableTemp.push_back( colonne );
         }
+
+        m_initialCsv.setTable(tableTemp);
+
+        myFile.close();
+
+        verif = true;
+
     }
 
     else
     {
-        qDebug() << fichierUrl + " could not be opened.\n";
+        cout << "wtf";
     }
 
-    return 0;
+    return verif;
 
 }
 
-void DataParser::generatePreEntity(QString nomEntite, std::vector<QString> colonnesCsvInitial)
+void DataParser::generatePreEntity(string nomEntite, vector<string> colonnesCsvInitial)
 {
+    vector<string> listeAttributs = m_initialCsv.getFirstLine();
+    vector<vector<string>> initialCsv = m_initialCsv.getTable();
+
+    vector<vector<string>> newEntite;
+
+    bool verif = true;
+
+        for (int i(0) ; i < colonnesCsvInitial.size() ; i++)
+        {
+            if( find(listeAttributs.begin(), listeAttributs.end(), colonnesCsvInitial[i]) == listeAttributs.end())
+            {
+                verif = false;
+            }
+        }
+
+    if (verif)
+    {
+        vector<int> myIndexes = m_initialCsv.indexEntites(colonnesCsvInitial);
+
+        for ( int i(0) ; i < initialCsv.size() ; i++ )
+        {
+            for ( int j(0) ; j < newEntite.size() ; j++ )
+            {
+//                for ( int k(0) ; )
+            }
+        }
+
+        if ()
+
+    }
+
 
 }
 
@@ -70,7 +188,7 @@ void DataParser::updateEntity(int i)
 
 }
 
-void DataParser::generateProperty(QString nomProperty, std::vector<QString> colonnesCsvInitial)
+void DataParser::generateProperty(string nomProperty, vector<string> colonnesCsvInitial)
 {
 
 }
@@ -91,15 +209,15 @@ void DataParser::updateEntities()
 void DataParser::generateProperties()
 {
 
-    QString entite1 ("nom_ligne_nature");
+    string entite1 ("nom_ligne_nature");
 
-    QString latitude ("latitude_wgs84");
-    QString longitude ("longitude_wgs84");
-    QString code_ligne ("code_ligne");
-    QString nom ("nom");
-    QString nature ("nature");
+    string latitude ("latitude_wgs84");
+    string longitude ("longitude_wgs84");
+    string code_ligne ("code_ligne");
+    string nom ("nom");
+    string nature ("nature");
 
-    vector<QString> colonnes_latitude_longitude { nom, code_ligne, nature, latitude, longitude};
+    vector<string> colonnes_latitude_longitude { nom, code_ligne, nature, latitude, longitude};
 
     generateProperty ( entite1, colonnes_latitude_longitude );
 }
@@ -108,18 +226,18 @@ void DataParser::generateProperties()
 void DataParser::generatePreEntities()
 {
 
-    QString ville ("ville");
-    QString code_ligne ("code_ligne");
-    QString nom ("nom");
-    QString nature ("nature");
-    QString cp ("cp");
-    QString dept ("dept");
+    string ville ("ville");
+    string code_ligne ("code_ligne");
+    string nom ("nom");
+    string nature ("nature");
+    string cp ("cp");
+    string dept ("dept");
 
-    vector<QString> colonnes_ville { ville, dept };
-    vector<QString> colonnes_code_ligne { code_ligne };
-    vector<QString> colonnes_nom { nom, cp, ville };
-    vector<QString> colonnes_nature { nature };
-    vector<QString> colonnes_dept { dept };
+    vector<string> colonnes_ville { ville, dept };
+    vector<string> colonnes_code_ligne { code_ligne };
+    vector<string> colonnes_nom { nom, cp, ville };
+    vector<string> colonnes_nature { nature };
+    vector<string> colonnes_dept { dept };
 
 
     generatePreEntity( ville, colonnes_ville );
@@ -135,4 +253,10 @@ void DataParser::generateMPD()
     updateEntities();
     generateProperties();
 }
+
+Table DataParser::getInitialCsv()
+{
+    return m_initialCsv;
+}
+
 

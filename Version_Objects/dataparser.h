@@ -2,18 +2,28 @@
 #define DATAPARSER_H
 
 #include <vector>
-#include <QString>
+#include <string>
 
 class Table
 {
 public:
     Table();
 
-    std::vector<QString> colonnes() const;
-    int nbColonnes() const;
+    void setTable(std::vector<std::vector<std::string>>);
+
+    std::vector<std::vector<std::string>> getTable ();
+    std::vector<std::string> getFirstLine ();
+
+    std::vector<int> indexEntites (std::vector<std::string> nomEntites);
+
+    void displayTable() const;
+    void displayFirstLine() const;
+
+//    int nbColonnes() const;
+//    std::vector<std::string> colonnes() const;
 
 private:
-    std::vector<std::vector<QString>> m_data;
+    std::vector<std::vector<std::string>> m_data;
 
 };
 
@@ -24,25 +34,27 @@ class DataParser
 public:
     DataParser();
 
-    bool loadData(QString fichierUrl);
+    bool loadData(std::string fichierUrl);
     void generatePreEntities();
     void generateMPD();
+    Table getInitialCsv();
 
-
+    void afficheTable(Table myTable) const;
+    void afficheEntities(Table myTable) const;
 
 private:
     std::vector<Table> m_base;
-    Table initialCsv;
+    Table m_initialCsv;
 
         // dans le generatePreEntities
-    void generatePreEntity(QString nomEntite, std::vector<QString> colonnesCsvInitial);
+    void generatePreEntity(std::string nomEntite, std::vector<std::string> colonnesCsvInitial);
 
         // dans le generateMPD
     void updateEntities();
     void updateEntity(int i);
         // &
     void generateProperties();
-    void generateProperty( QString nomProperty, std::vector<QString> colonnesCsvInitial);
+    void generateProperty( std::string nomProperty, std::vector<std::string> colonnesCsvInitial);
 
 
 };

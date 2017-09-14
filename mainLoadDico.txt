@@ -1,0 +1,79 @@
+#include <QCoreApplication>
+#include <QDebug>
+#include <QFile>
+
+#include <string>
+#include <iostream>
+
+#include <fstream>
+#include <sstream>
+
+using namespace std;
+
+string convertQString_2_string(QString qs)
+{
+    return qs.toLatin1().constData();
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    // les champs de chaque ligne sont stocké dans ce tableau de  tableau
+    vector< vector<string>> itemsParColonnes;
+
+    bool isSTL4Stream = false;
+    int cptr(0);
+    if( isSTL4Stream )
+    {
+        string line;
+        ifstream myfile;
+        myfile.open("C:/_Projets/Qt/test/democonsole/build-democonsole-Desktop_Qt_5_9_0_MinGW_32bit-Debug/debug/Lexique381.csv");
+
+        if (myfile.is_open())
+        {
+            while ( getline (myfile, line) /* && cptr++<2 */)
+            {
+                std::istringstream streamLine(line);
+                std::string valeurColonne;
+                vector<string> colonne;
+                while(std::getline(streamLine, valeurColonne, ';'))
+                {
+                    std::cout << valeurColonne << endl;
+                    colonne.push_back( valeurColonne );
+                    QString(colonne);
+                }
+                itemsParColonnes.push_back( colonne );
+            }
+            myfile.close();
+        }
+        else
+            cout << "nom du fichier incorrect" << endl;
+    }
+    else
+    {
+        // Version avec les QFile et
+        QFile file("C:/_Projets/Qt/test/democonsole/build-democonsole-Desktop_Qt_5_9_0_MinGW_32bit-Debug/debug/Lexique381.csv");
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            while ( !file.atEnd()   && cptr++<1  )
+            {
+                QByteArray lineByteArray = file.readLine();
+                QString laLigne(lineByteArray);
+                QStringList tableauColonne = laLigne.split(";");
+                vector<string> colonne;
+                foreach (QString valeurColonne, tableauColonne)
+                {
+                    colonne.push_back( valeurColonne.toLatin1().constData() );
+                    std::cout << convertQString_2_string(valeurColonne) << '\n'; // convertion QString -> st::string
+                }
+                itemsParColonnes.push_back( colonne );
+            }
+            file.close();
+        }
+        else
+            cout << "nom du fichier incorrect" << endl;
+    }
+
+    return a.exec();
+}
