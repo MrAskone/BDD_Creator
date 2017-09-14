@@ -219,32 +219,29 @@ void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvIn
                 ligneId ++;
             }
         }
+        nomEntite.setTable(newEntite);
+        m_base.push_back(nomEntite);
+
+        cout << "L'entite renseigne les attributs:\t";
+        afficheEntities(nomEntite);
+        cout << "\nL'entite a une taille de:\t\t" << newEntite.size() << " lignes" << endl;
     }
 
-    nomEntite.setTable(newEntite);
-    m_base.push_back(nomEntite);
-
-    cout << "L'entite renseigne les attributs:\t";
-    afficheEntities(nomEntite);
-    cout << "\nL'entite a une taille de:\t\t" << newEntite.size() << " lignes" << endl;
-
-    //    }
-
-    //    else
-    //    {
-    //        cout << "Some colonnes weren't found in the Csv.\n";
-    //    }
-
+    else
+    {
+    cout << "Some colonnes weren't found in the Csv.\n";
+    }
 }
 
-void DataParser::updateEntity(int tableIndex)
+void DataParser::updateEntity(size_t tableIndex)
 {
 
 }
 
 void DataParser::generateProperty(Table nomProperty, vector<string> colonnesCsvInitial)
 {
-
+    generatePreEntity(nomProperty, colonnesCsvInitial);
+    updateEntity(m_base.size()-1);
 }
 
 

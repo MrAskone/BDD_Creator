@@ -53,7 +53,7 @@ private:
 
         // dans le generateMPD
     void updateEntities();
-    void updateEntity(int tableIndex);
+    void updateEntity(size_t tableIndex);
         // &
     void generateProperties();
     void generateProperty( Table nomProperty, std::vector<std::string> colonnesCsvInitial);
