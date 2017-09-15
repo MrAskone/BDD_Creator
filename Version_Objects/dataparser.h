@@ -51,7 +51,9 @@ private:
     void generatePrimaryKeyIndex(std::vector<std::vector<std::string> > &newEntite);
     void generatePreEntity(Table nomEntite, std::vector<std::string> colonnesCsvInitial);
 
+
         // dans le generateMPD
+    void insertForeignKey (Table &nomTable, std::size_t indexInCurrentTable, Table &entite, std::size_t indexInEntite );
     void updateEntities();
     void updateEntity(Table &nomTable);
         // &
