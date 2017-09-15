@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
 
     myCsv.generatePreEntities();
 
+    myCsv.generateMPD();
+//    myCsv.afficheEntityFromBase(0);
 
 
 

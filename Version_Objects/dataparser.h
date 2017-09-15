@@ -19,8 +19,6 @@ public:
     void displayTable() const;
     void displayFirstLine() const;
 
-//    int nbColonnes() const;
-//    std::vector<std::string> colonnes() const;
 
 private:
     std::vector<std::vector<std::string>> m_data;
@@ -35,12 +33,13 @@ public:
     DataParser();
 
     bool loadData(std::string fichierUrl);
-    void generatePreEntities();
-    void generateMPD();
     Table getInitialCsv();
 
-    void afficheEntityFromBase(int indice);
+    void generatePreEntities();
 
+    void generateMPD();
+
+    void afficheEntityFromBase(int indice);
     void afficheTable(Table myTable) const;
     void afficheEntities(Table myTable) const;
 
@@ -49,11 +48,12 @@ private:
     Table m_initialCsv;
 
         // dans le generatePreEntities
+    void generatePrimaryKeyIndex(std::vector<std::vector<std::string> > &newEntite);
     void generatePreEntity(Table nomEntite, std::vector<std::string> colonnesCsvInitial);
 
         // dans le generateMPD
     void updateEntities();
-    void updateEntity(size_t tableIndex);
+    void updateEntity(Table &nomTable);
         // &
     void generateProperties();
     void generateProperty( Table nomProperty, std::vector<std::string> colonnesCsvInitial);

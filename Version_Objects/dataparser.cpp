@@ -73,15 +73,6 @@ void Table::displayTable() const
 }
 
 
-//vector<string> Table::colonnes() const
-//{
-
-//}
-
-//int Table::nbColonnes() const
-//{
-
-//}
 
 //-------------------------------------------------------------------
 
@@ -152,6 +143,32 @@ bool DataParser::loadData(string fichierUrl)            // OK
 
 }
 
+void DataParser::generatePrimaryKeyIndex(vector<vector<string>> &newEntite)
+{
+    vector<vector<string>> indexedEntity;
+
+    for (int i(0) ; i < newEntite.size() ; i++)
+    {
+        indexedEntity.push_back(vector<string>(0));
+        if ( i == 0)
+        {
+            indexedEntity[0].push_back("id_"+ newEntite[0][0]);
+        }
+        else
+        {
+            indexedEntity[i].push_back(to_string(i));
+        }
+        for (string valeur : newEntite[i])
+        {
+            indexedEntity[i].push_back(valeur);
+        }
+    }
+
+    newEntite = indexedEntity;
+    cout << "Indexes added to Entity\n";
+
+}
+
 void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvInitial)
 {
     vector<string> listeAttributs = m_initialCsv.getFirstLine();
@@ -219,6 +236,8 @@ void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvIn
                 ligneId ++;
             }
         }
+
+        generatePrimaryKeyIndex(newEntite);
         nomEntite.setTable(newEntite);
         m_base.push_back(nomEntite);
 
@@ -229,19 +248,50 @@ void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvIn
 
     else
     {
-    cout << "Some colonnes weren't found in the Csv.\n";
+        cout << "Some colonnes weren't found in the Csv.\n";
     }
 }
 
-void DataParser::updateEntity(size_t tableIndex)
+void DataParser::updateEntity(Table &nomTable)
 {
+    cout << endl << nomTable.getTable()[0][1] << endl;
 
+    size_t indexInForeignTable(0);
+    size_t indexInCurrentTable(0);
+    size_t counter;
+
+    for ( string attribut : nomTable.getFirstLine() )
+    {
+//        cout << attribut << ";";
+
+        indexInForeignTable = 0;
+        counter = 0;
+
+        for ( Table entite : m_base)
+        {
+            for ( string foreignAttributs : entite.getFirstLine() )
+            {
+                if (foreignAttributs == attribut &&
+                    entite.getTable() != nomTable.getTable() &&
+                    attribut != nomTable.getFirstLine()[1])
+                {
+                    cout << foreignAttributs << "was found in" << entite.getTable()[0][1] << endl;
+                    indexInForeignTable = counter;
+
+
+                }
+                counter ++;
+            }
+        }
+        indexInCurrentTable++;
+    }
+    cout << endl;
 }
 
 void DataParser::generateProperty(Table nomProperty, vector<string> colonnesCsvInitial)
 {
     generatePreEntity(nomProperty, colonnesCsvInitial);
-    updateEntity(m_base.size()-1);
+    updateEntity(m_base[m_base.size()-1]);
 }
 
 
@@ -250,9 +300,11 @@ void DataParser::generateProperty(Table nomProperty, vector<string> colonnesCsvI
 void DataParser::updateEntities()
 {
 
+    cout << "\nUpdating Entities\n";
+
     for (int i(0) ; i < m_base.size() ; i++)
     {
-        updateEntity(i);
+        updateEntity(m_base[i]);
     }
 
 }
@@ -262,13 +314,14 @@ void DataParser::generateProperties()
 
     Table nom_ligne_nature;
 
+    string latitude_longitude ("wgs84");
     string latitude ("latitude_wgs84");
     string longitude ("longitude_wgs84");
     string code_ligne ("code_ligne");
     string nom ("nom");
     string nature ("nature");
 
-    vector<string> colonnes_latitude_longitude { nom, code_ligne, nature, latitude, longitude};
+    vector<string> colonnes_latitude_longitude { latitude_longitude, latitude, longitude,  nom, code_ligne, nature };
 
     generateProperty ( nom_ligne_nature, colonnes_latitude_longitude );
 }
@@ -300,6 +353,7 @@ void DataParser::generatePreEntities()
 
 void DataParser::generateMPD()
 {
+    cout << "\ngenerating MPD\n";
     updateEntities();
     generateProperties();
 }
