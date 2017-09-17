@@ -18,18 +18,23 @@ Table::Table()
 
 }
 
-void Table::setTable(vector<vector<string>> newTable)
+void Table::setTable(std::vector<ligne> newTable)
 {
     m_data = newTable;
 }
 
-vector<string> Table::getFirstLine()
+vector<ligne> Table::getTable()
+{
+    return m_data;
+}
+
+ligne Table::getFirstLine()
 {
     return m_data[0];
 }
 
 
-vector<int> Table::indexEntites(vector<string> nomEntites)
+vector<int> Table::indexEntites(ligne nomEntites)
 {
     vector<int> myIndexes;
 
@@ -47,10 +52,6 @@ vector<int> Table::indexEntites(vector<string> nomEntites)
 }
 
 
-vector<vector<string>> Table::getTable()
-{
-    return m_data;
-}
 
 void Table::displayFirstLine() const
 {
@@ -62,7 +63,7 @@ void Table::displayFirstLine() const
 
 void Table::displayTable() const
 {
-    for (vector<string> v : m_data)
+    for (ligne v : m_data)
     {
         for ( string str : v)
         {
@@ -102,9 +103,9 @@ bool DataParser::loadData(string fichierUrl)            // OK
     bool verif = false;
 
     ifstream myFile;
-    string line;
+    string lineFromCsv;
 
-    vector<vector<string>> tableTemp;
+    vector<ligne> tableTemp;
 
     myFile.open(fichierUrl);
 
@@ -112,18 +113,18 @@ bool DataParser::loadData(string fichierUrl)            // OK
     {
         cout << fichierUrl << " successufully accessed.\n";
 
-        while ( getline (myFile, line) )
+        while ( getline (myFile, lineFromCsv) )
         {
-            istringstream streamLine(line);
+            istringstream streamLine(lineFromCsv);
             string valeurColonne;
 
-            vector<string> colonne;
+            ligne columnFromCsv;
 
             while ( getline( streamLine, valeurColonne, ';' ) )
             {
-                colonne.push_back(valeurColonne);
+                columnFromCsv.push_back(valeurColonne);
             }
-            tableTemp.push_back( colonne );
+            tableTemp.push_back( columnFromCsv );
         }
 
         m_initialCsv.setTable(tableTemp);
@@ -143,13 +144,14 @@ bool DataParser::loadData(string fichierUrl)            // OK
 
 }
 
-void DataParser::generatePrimaryKeyIndex(vector<vector<string>> &newEntite)     //OK
+void DataParser::generatePrimaryKeyIndex(vector<ligne> &newEntite)     // OK but could be improved.
+                                                                       // Try adding the index to the entity without copying the whole Table.
 {
-    vector<vector<string>> indexedEntity;
+    vector<ligne> indexedEntity;
 
     for (int i(0) ; i < newEntite.size() ; i++)
     {
-        indexedEntity.push_back(vector<string>(0));
+        indexedEntity.push_back(ligne(0));
         if ( i == 0)
         {
             indexedEntity[0].push_back("id_"+ newEntite[0][0]);
@@ -169,18 +171,18 @@ void DataParser::generatePrimaryKeyIndex(vector<vector<string>> &newEntite)     
 
 }
 
-void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvInitial)      //OK
+void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial)      //OK
 {
-    vector<string> listeAttributs = m_initialCsv.getFirstLine();
-    vector<vector<string>> initialCsv = m_initialCsv.getTable();
+    ligne listeAttributs = m_initialCsv.getFirstLine();
+    vector<ligne> initialCsv = m_initialCsv.getTable();
 
-    vector<vector<string>> newEntite;
+    vector<ligne> newEntite;
 
     bool verif = true;
 
-    for (int i(0) ; i < colonnesCsvInitial.size() ; i++)
+    for (int i(0) ; i < nomsColonnesCsvInitial.size() ; i++)
     {
-        if( find(listeAttributs.begin(), listeAttributs.end(), colonnesCsvInitial[i]) == listeAttributs.end())
+        if( find(listeAttributs.begin(), listeAttributs.end(), nomsColonnesCsvInitial[i]) == listeAttributs.end())
         {
             verif = false;
         }
@@ -188,7 +190,7 @@ void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvIn
 
     if (verif)
     {
-        vector<int> myIndexes = m_initialCsv.indexEntites(colonnesCsvInitial);
+        vector<int> myIndexes = m_initialCsv.indexEntites(nomsColonnesCsvInitial);
 
         cout << "\nEntite created";
         cout << "\nLes indides de l'entite sont: \t\t";
@@ -200,38 +202,38 @@ void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvIn
 
         cout << endl;
 
-        vector<string> ligneTemp;
+        ligne ligneTemp;
         bool duplicate;
         int ligneId (0);
 
-        for ( int ligneCsv (0) ; ligneCsv < initialCsv.size() ; ligneCsv++ )
+        for ( int numLigneCsv (0) ; numLigneCsv < initialCsv.size() ; numLigneCsv++ )
         {
-            duplicate = false;
+            duplicate = false;      // reinitialize duplicate to false to check for duplicates once again
 
-            for ( size_t ligneEntite (0) ; ligneEntite < newEntite.size() ; ligneEntite ++ )
+            for ( size_t numLigneEntite (0) ; numLigneEntite < newEntite.size() ; numLigneEntite ++ )
             {
 
-                ligneTemp.clear();
+                ligneTemp.clear();  // reinitialize ligneTemp
 
-                for ( int colonne (0) ; colonne < myIndexes.size() ; colonne++ )
+                for ( int numColonne (0) ; numColonne < myIndexes.size() ; numColonne++ )
                 {
-                    ligneTemp.push_back( initialCsv [ ligneCsv ] [ myIndexes [ colonne ] ] );
+                    ligneTemp.push_back( initialCsv [ numLigneCsv ] [ myIndexes [ numColonne ] ] );
                 }
 
-                if( ligneTemp == newEntite [ ligneEntite ] )        // si il y a un duple, on sort de la boucle des 'j'
+                if( ligneTemp == newEntite [ numLigneEntite ] ) // S'il y a un duple:
                 {
-                    ligneEntite = newEntite.size();
-                    duplicate = true;
+                    numLigneEntite = newEntite.size();          // On sort de la boucle des 'j'.
+                    duplicate = true;                           // On signale le duple.
                 }
             }
 
             if( !duplicate )
             {
-                newEntite.push_back(vector<string>(0));
+                newEntite.push_back(ligne(0));
 
-                for ( int colonne (0) ; colonne < myIndexes.size() ; colonne++ )
+                for ( int numColonne (0) ; numColonne < myIndexes.size() ; numColonne++ )
                 {
-                    newEntite[ ligneId ].push_back ( initialCsv[ ligneCsv ][ myIndexes [colonne] ] );
+                    newEntite[ ligneId ].push_back ( initialCsv[ numLigneCsv ][ myIndexes [numColonne] ] );
                 }
                 ligneId ++;
             }
@@ -254,23 +256,23 @@ void DataParser::generatePreEntity(Table nomEntite, vector<string> colonnesCsvIn
 
 void DataParser::insertForeignKey(Table &nomTable, size_t indexInCurrentTable, Table &entite, size_t indexInEntite)
 {
-    vector<vector<string>> maTable (nomTable.getTable());
-    vector<vector<string>> uneEntite (entite.getTable());
+    vector<ligne> maTable (nomTable.getTable());
+    vector<ligne> uneEntite (entite.getTable());
 
-    for ( int ligneOfTable (0) ; ligneOfTable < maTable.size() ; ligneOfTable++ )           // impossible d'utiliser for auto si on veut modifier maTable
+    for ( int numLigneOfTable (0) ; numLigneOfTable < maTable.size() ; numLigneOfTable++ )           // impossible d'utiliser for auto si on veut modifier maTable
     {
-        for ( vector<string> ligneOfEntite : uneEntite)
+        for ( ligne ligneOfEntite : uneEntite)
         {
-            if ( maTable [ligneOfTable] [indexInCurrentTable] == ligneOfEntite [indexInEntite] )
+            if ( maTable [numLigneOfTable] [indexInCurrentTable] == ligneOfEntite [indexInEntite] )
             {
-                if( maTable [ligneOfTable] [indexInCurrentTable] == uneEntite[0][indexInEntite])
+                if( maTable [numLigneOfTable] [indexInCurrentTable] == uneEntite[0][indexInEntite])
                 {
-                    maTable [ligneOfTable] [indexInCurrentTable] = uneEntite[0][indexInEntite] + "_FK";
+                    maTable [numLigneOfTable] [indexInCurrentTable] = uneEntite[0][indexInEntite] + "_FK";
                 }
 
                 else
                 {
-                    maTable [ligneOfTable] [indexInCurrentTable] = ligneOfEntite[0];
+                    maTable [numLigneOfTable] [indexInCurrentTable] = ligneOfEntite[0];
                 }
             }
         }
@@ -290,9 +292,9 @@ void DataParser::updateEntity(Table &nomTable)
         {
             for ( size_t indexInForeignTable (0) ; indexInForeignTable < entite.getFirstLine().size() ; indexInForeignTable ++ )
             {
-                if (entite.getFirstLine() [indexInForeignTable] == nomTable.getFirstLine() [indexInCurrentTable] &&
+                if (    entite.getFirstLine() [indexInForeignTable] == nomTable.getFirstLine() [indexInCurrentTable] &&
                         entite.getTable() != nomTable.getTable() &&
-                        entite.getFirstLine() [indexInForeignTable] != nomTable.getFirstLine()[1])
+                        entite.getFirstLine() [indexInForeignTable] != nomTable.getFirstLine()[1]   )
                 {
                     cout << entite.getFirstLine() [indexInForeignTable] << " was found in " << entite.getTable()[0][1]
                          << " in colonne number: " << indexInForeignTable << endl;
@@ -305,9 +307,9 @@ void DataParser::updateEntity(Table &nomTable)
     cout << endl;
 }
 
-void DataParser::generateProperty(Table nomProperty, vector<string> colonnesCsvInitial)
+void DataParser::generateProperty(Table nomProperty, ligne numColonneCsvInitial)
 {
-    generatePreEntity(nomProperty, colonnesCsvInitial);
+    generatePreEntity(nomProperty, numColonneCsvInitial);
     updateEntity(m_base[m_base.size()-1]);
 }
 

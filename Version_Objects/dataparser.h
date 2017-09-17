@@ -4,24 +4,27 @@
 #include <vector>
 #include <string>
 
+typedef std::vector<std::string> ligne;
+typedef std::vector<std::string> colonne;
+
 class Table
 {
 public:
     Table();
 
-    void setTable(std::vector<std::vector<std::string>>);
+    void setTable(std::vector<ligne>);
 
-    std::vector<std::vector<std::string>> getTable ();
-    std::vector<std::string> getFirstLine ();
+    std::vector<ligne> getTable ();
+    ligne getFirstLine ();
 
-    std::vector<int> indexEntites (std::vector<std::string> nomEntites);
+    std::vector<int> indexEntites (ligne nomEntites);
 
     void displayTable() const;
     void displayFirstLine() const;
 
 
 private:
-    std::vector<std::vector<std::string>> m_data;
+    std::vector<ligne> m_data;
 
 };
 
@@ -48,8 +51,8 @@ private:
     Table m_initialCsv;
 
         // dans le generatePreEntities
-    void generatePrimaryKeyIndex(std::vector<std::vector<std::string> > &newEntite);
-    void generatePreEntity(Table nomEntite, std::vector<std::string> colonnesCsvInitial);
+    void generatePrimaryKeyIndex(std::vector<ligne> &newEntite);
+    void generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial);
 
 
         // dans le generateMPD
@@ -57,8 +60,8 @@ private:
     void updateEntities();
     void updateEntity(Table &nomTable);
         // &
+    void generateProperty(Table nomProperty, ligne numColonneCsvInitial);
     void generateProperties();
-    void generateProperty( Table nomProperty, std::vector<std::string> colonnesCsvInitial);
 
 
 };
