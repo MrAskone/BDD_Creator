@@ -103,7 +103,7 @@ bool DataParser::loadData(string fichierUrl)            // OK
     bool verif = false;
 
     ifstream myFile;
-    string lineFromCsv;
+    string stringFromCsv;
 
     vector<ligne> tableTemp;
 
@@ -113,18 +113,18 @@ bool DataParser::loadData(string fichierUrl)            // OK
     {
         cout << fichierUrl << " successufully accessed.\n";
 
-        while ( getline (myFile, lineFromCsv) )
+        while ( getline (myFile, stringFromCsv) )
         {
-            istringstream streamLine(lineFromCsv);
-            string valeurColonne;
+            istringstream streamLine(stringFromCsv);
+            string valeurLigne;
 
-            ligne columnFromCsv;
+            ligne lineFromCsv;
 
-            while ( getline( streamLine, valeurColonne, ';' ) )
+            while ( getline( streamLine, valeurLigne, ';' ) )
             {
-                columnFromCsv.push_back(valeurColonne);
+                lineFromCsv.push_back(valeurLigne);
             }
-            tableTemp.push_back( columnFromCsv );
+            tableTemp.push_back( lineFromCsv );
         }
 
         m_initialCsv.setTable(tableTemp);
@@ -182,7 +182,7 @@ void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial
 
     for (int i(0) ; i < nomsColonnesCsvInitial.size() ; i++)
     {
-        if( find(listeAttributs.begin(), listeAttributs.end(), nomsColonnesCsvInitial[i]) == listeAttributs.end())
+        if( find(listeAttributs.begin(), listeAttributs.end(), nomsColonnesCsvInitial[i]) == listeAttributs.end() )
         {
             verif = false;
         }
@@ -192,38 +192,44 @@ void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial
     {
         vector<int> myIndexes = m_initialCsv.indexEntites(nomsColonnesCsvInitial);
 
-        cout << "\nEntite created";
-        cout << "\nLes indides de l'entite sont: \t\t";
+//        cout << "\nEntite created";
+//        cout << "\nLes indides de l'entite sont: \t\t";
 
-        for ( int indice : myIndexes )
-        {
-            cout << indice << "; ";
-        }
+//        for ( int indice : myIndexes )
+//        {
+//            cout << indice << "; ";
+//        }
 
-        cout << endl;
+//        cout << endl;
 
         ligne ligneTemp;
         bool duplicate;
-        int ligneId (0);
+//        int ligneId (0);
 
-        for ( int numLigneCsv (0) ; numLigneCsv < initialCsv.size() ; numLigneCsv++ )
+        for ( ligne ligneOfCsv : initialCsv )
         {
             duplicate = false;      // reinitialize duplicate to false to check for duplicates once again
 
-            for ( size_t numLigneEntite (0) ; numLigneEntite < newEntite.size() ; numLigneEntite ++ )
+            for ( ligne ligneEntite : newEntite )
             {
 
                 ligneTemp.clear();  // reinitialize ligneTemp
 
-                for ( int numColonne (0) ; numColonne < myIndexes.size() ; numColonne++ )
+                for ( int indexColonne : myIndexes)
                 {
-                    ligneTemp.push_back( initialCsv [ numLigneCsv ] [ myIndexes [ numColonne ] ] );
+                    ligneTemp.push_back(  ligneOfCsv [indexColonne] );
                 }
 
-                if( ligneTemp == newEntite [ numLigneEntite ] ) // S'il y a un duple:
+//                if( ligneTemp == newEntite [ numLigneEntite ] ) // S'il y a un duple:
+//                {
+//                    numLigneEntite = newEntite.size();          // On sort de la boucle des 'j'.
+//                    duplicate = true;                           // On signale le duple.
+
+//                }
+                duplicate = ( ligneTemp == ligneEntite );
+                if (duplicate)
                 {
-                    numLigneEntite = newEntite.size();          // On sort de la boucle des 'j'.
-                    duplicate = true;                           // On signale le duple.
+                    break;
                 }
             }
 
@@ -231,11 +237,11 @@ void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial
             {
                 newEntite.push_back(ligne(0));
 
-                for ( int numColonne (0) ; numColonne < myIndexes.size() ; numColonne++ )
+                for ( int indexColonne : myIndexes )
                 {
-                    newEntite[ ligneId ].push_back ( initialCsv[ numLigneCsv ][ myIndexes [numColonne] ] );
+                    newEntite[ newEntite.size() - 1 ].push_back (  ligneOfCsv [ indexColonne ] );
                 }
-                ligneId ++;
+//                ligneId ++;
             }
         }
 

@@ -137,7 +137,7 @@ vector<QStringList> Utile::csvToVector(const QString &myUrl)
         qDebug() << tempList;
 
     }
-
+    return digitalCsv;
 
 }
 

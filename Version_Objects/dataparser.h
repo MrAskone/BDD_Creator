@@ -51,6 +51,7 @@ private:
     Table m_initialCsv;
 
         // dans le generatePreEntities
+//    void addLineToTable ();
     void generatePrimaryKeyIndex(std::vector<ligne> &newEntite);
     void generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial);
 
