@@ -7,11 +7,11 @@ CONFIG -= app_bundle
 
 SOURCES += cpp/main.cpp \
     cpp/wmanager.cpp \
-    cpp/utile.cpp
+    cpp/dataparser.cpp
 
 HEADERS += \
     cpp/wmanager.h \
-    cpp/utile.h
+    cpp/dataparser.h
 
 DISTFILES += \
     qml/MyButton.qml \
