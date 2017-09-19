@@ -63,7 +63,7 @@ void Table::displayFirstLine() const
 
 void Table::displayTable() const
 {
-    for (ligne v : m_data)
+    for (colonne v : m_data)
     {
         for ( string str : v)
         {
@@ -144,8 +144,64 @@ bool DataParser::loadData(string fichierUrl)            // OK
 
 }
 
+bool DataParser::loadDataInColumns(string fichierUrl)
+{
+    bool verif = false;
+
+    ifstream myFile;
+    string stringFromCsv;
+
+    int numColonne (0);
+
+    vector<colonne> tableTemp;
+
+    myFile.open(fichierUrl);
+
+    if (myFile.is_open())
+    {
+        cout << fichierUrl << " successufully accessed.\n";
+
+        bool firstLine (true);
+
+        while ( getline (myFile, stringFromCsv) )
+        {
+            istringstream streamLine(stringFromCsv);
+            string valeurCase;
+            numColonne = 0;
+            while ( getline( streamLine, valeurCase, ';' ) )
+            {
+                if (firstLine)
+                {
+                    tableTemp.push_back(colonne(0));
+                }
+                tableTemp[numColonne].push_back(valeurCase);
+
+                cout << tableTemp[numColonne][tableTemp[numColonne].size()-1] << endl << endl;
+                numColonne ++;
+            }
+
+            firstLine = false;
+            //            tableTemp.push_back( colonneFromCsv );
+        }
+
+        m_initialCsv.setTable(tableTemp);
+
+        myFile.close();
+
+        verif = true;
+
+    }
+
+    else
+    {
+        cout << "File could not be loaded";
+    }
+
+    return verif;
+}
+
 void DataParser::generatePrimaryKeyIndex(vector<ligne> &newEntite)     // OK but could be improved.
-                                                                       // Try adding the index to the entity without copying the whole Table.
+// Try adding the index to the entity without copying the whole Table.
 {
     vector<ligne> indexedEntity;
 
@@ -192,19 +248,19 @@ void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial
     {
         vector<int> myIndexes = m_initialCsv.indexEntites(nomsColonnesCsvInitial);
 
-//        cout << "\nEntite created";
-//        cout << "\nLes indides de l'entite sont: \t\t";
+        //        cout << "\nEntite created";
+        //        cout << "\nLes indides de l'entite sont: \t\t";
 
-//        for ( int indice : myIndexes )
-//        {
-//            cout << indice << "; ";
-//        }
+        //        for ( int indice : myIndexes )
+        //        {
+        //            cout << indice << "; ";
+        //        }
 
-//        cout << endl;
+        //        cout << endl;
 
         ligne ligneTemp;
         bool duplicate;
-//        int ligneId (0);
+        //        int ligneId (0);
 
         for ( ligne ligneOfCsv : initialCsv )
         {
@@ -220,12 +276,12 @@ void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial
                     ligneTemp.push_back(  ligneOfCsv [indexColonne] );
                 }
 
-//                if( ligneTemp == newEntite [ numLigneEntite ] ) // S'il y a un duple:
-//                {
-//                    numLigneEntite = newEntite.size();          // On sort de la boucle des 'j'.
-//                    duplicate = true;                           // On signale le duple.
+                //                if( ligneTemp == newEntite [ numLigneEntite ] ) // S'il y a un duple:
+                //                {
+                //                    numLigneEntite = newEntite.size();          // On sort de la boucle des 'j'.
+                //                    duplicate = true;                           // On signale le duple.
 
-//                }
+                //                }
                 duplicate = ( ligneTemp == ligneEntite );
                 if (duplicate)
                 {
@@ -241,7 +297,7 @@ void DataParser::generatePreEntity(Table nomEntite, ligne nomsColonnesCsvInitial
                 {
                     newEntite[ newEntite.size() - 1 ].push_back (  ligneOfCsv [ indexColonne ] );
                 }
-//                ligneId ++;
+                //                ligneId ++;
             }
         }
 
@@ -303,7 +359,7 @@ void DataParser::updateEntity(Table &nomTable)
                         entite.getFirstLine() [indexInForeignTable] != nomTable.getFirstLine()[1]   )
                 {
                     cout << entite.getFirstLine() [indexInForeignTable] << " was found in " << entite.getTable()[0][1]
-                         << " in colonne number: " << indexInForeignTable << endl;
+                            << " in colonne number: " << indexInForeignTable << endl;
 
                     insertForeignKey(nomTable, indexInCurrentTable, entite, indexInForeignTable);
                 }
@@ -340,8 +396,8 @@ void DataParser::generateProperties()
     Table nom_ligne_nature;
 
     string latitude_longitude ("wgs84");
-//    string latitude ("latitude_wgs84");
-//    string longitude ("longitude_wgs84");
+    //    string latitude ("latitude_wgs84");
+    //    string longitude ("longitude_wgs84");
     string code_ligne ("code_ligne");
     string nom ("nom");
     string nature ("nature");

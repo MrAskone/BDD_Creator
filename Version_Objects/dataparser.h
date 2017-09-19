@@ -24,7 +24,7 @@ public:
 
 
 private:
-    std::vector<ligne> m_data;
+    std::vector<colonne> m_data;
 
 };
 
@@ -36,6 +36,9 @@ public:
     DataParser();
 
     bool loadData(std::string fichierUrl);
+
+    bool loadDataInColumns (std::string fichierUrl);
+
     Table getInitialCsv();
 
     void generatePreEntities();
