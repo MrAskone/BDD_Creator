@@ -1,11 +1,5 @@
 #include "dataparser.h"
 
-//#include <QFile>
-//#include <QDir>
-//#include <QTextStream>
-
-//#include <QDebug>
-
 #include <iostream>
 #include <fstream>
 #include <ostream>

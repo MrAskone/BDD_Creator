@@ -50,10 +50,10 @@ void WManager::makeQMLtab(QString nomFichierQMLsansExtension)
     // 2/2 Initialisation des valeurs pour le QML avant chargement du fichier
     // Initialisation des modèles (même vides)
     QStringList directoryList(" ");
-    updateQML_model("myListModel", directoryList);
+    updateQML_model("attributesListModel", directoryList);
 
     QStringList fileList(" ");
-    updateQML_model("myFileListModel", fileList);
+    updateQML_model("ListModel", fileList);
 
     QStringList extensionList(" ");
     updateQML_model("extensionListModel", extensionList);
@@ -119,7 +119,13 @@ void WManager::sendActionToCpp(QString nomAction, QString parametre/*=""*/)
 
     if ( nomAction == "displayAttributeList" )                         // Add to List Button
     {
-        parametre = parametre.remove(0, 8);
+        string path = parametre.remove(0, 8);
+
+        if (monCsv.loadData(path))
+        {
+
+        }
+
 
 
     }

@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <QStringList>
 #include <vector>
+#include "dataparser.h"
 
 using namespace std;
 
@@ -56,9 +57,11 @@ public:
 
     Q_INVOKABLE void testActionQML(int nom);
 
-    QStringList directoryList;
-    QStringList fileList;
-    QStringList extensionList;
+    QStringList attributeList;
+    QStringList tableList;
+    QStringList List;
+
+    DataParser monCsv;
 
     //vector<int> listeEntiers; // une variable persistante en mémoire
 

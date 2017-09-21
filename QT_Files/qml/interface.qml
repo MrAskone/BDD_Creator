@@ -115,13 +115,13 @@ Rectangle {
             Column {
 
                 TableView{
-                    id: directoryTableView
+                    id: attributeTableView
                     width : 350
                     headerVisible: false
                     TableViewColumn{
                         width : 300
                     }
-                    model: myListModel
+                    model: attributesListModel
                     itemDelegate : Item {
                         Text{
                             x : 5
