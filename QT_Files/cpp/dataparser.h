@@ -45,6 +45,8 @@ public:
 
     void generateMPD();
 
+    void createAllCsv ();
+
     void afficheEntityFromBase(int indice);
     void afficheTable(Table myTable) const;
     void afficheEntities(Table myTable) const;

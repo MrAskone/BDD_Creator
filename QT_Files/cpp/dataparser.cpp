@@ -427,4 +427,18 @@ Table DataParser::getInitialCsv()
 }
 
 
+void DataParser::createAllCsv()
+{
+    istringstream tempFile;
+    vector<ligne> tempTable;
+
+
+    for (Table csv : m_base)
+    {
+        tempTable = csv.getTable();
+        tempFile = "C:\Users\34011-58-11\Antoine_Afpa_QT\6-METTRE EN PLACE UNE BASE DE DONNEES\TP_Gares\BDD_Creator\\" + tempTable[0][1] +".csv";
+
+    }
+}
+
 
