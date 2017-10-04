@@ -439,4 +439,41 @@ Table DataParser::getInitialCsv()
 }
 
 
+void DataParser::generateAllCsv() const
+{
+    //    ofstream myNewCsv;
+    vector<ligne> tableau;
+    string nomDuCsv;
+
+    for (Table table : m_base)
+    {
+        tableau = table.getTable();
+        nomDuCsv = "mycsvfiles/" + tableau[0][1]  + ".csv";
+
+        ofstream myNewCsv ( nomDuCsv );
+
+        if ( myNewCsv.is_open() )
+        {
+
+            for (ligne uneLigne : tableau)
+            {
+                for (string caseDuTableau : uneLigne)
+                {
+                    myNewCsv << caseDuTableau << ";";
+                }
+                myNewCsv << "\n";
+            }
+
+            //        cout << "created " + nomDuCsv <<endl;
+
+            myNewCsv.close();
+        }
+
+        else
+        {
+            cout << "File could not be opened\n";
+        }
+    }
+}
+
 

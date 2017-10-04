@@ -49,6 +49,8 @@ public:
     void afficheTable(Table myTable) const;
     void afficheEntities(Table myTable) const;
 
+    void generateAllCsv ()const;
+
 private:
     std::vector<Table> m_base;
     Table m_initialCsv;
