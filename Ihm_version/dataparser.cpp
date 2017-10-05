@@ -1,6 +1,11 @@
 #include "dataparser.h"
 
 #include <iostream>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#include <QIODevice>
+#include <QDebug>
 
 using namespace std;
 
@@ -9,11 +14,47 @@ DataParser::DataParser(QObject *parent) : QObject(parent)
 
 }
 
-        //////////////////////////////
-//////////////////////////////////////////////
-        // ----- Q_PROPERTIES ----- //
-//////////////////////////////////////////////
-        //////////////////////////////
+
+void DataParser::loadFromCsv(QString urlOfCsv)
+{
+    urlOfCsv = urlOfCsv.remove(0,8);
+    QFile myFile (urlOfCsv);
+
+    if (myFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream myStream(&myFile);
+        vector<QStringList> monCsv;
+        QStringList ligneQSL;
+        QString uneLigne;
+
+        while(!myStream.atEnd())
+        {
+            uneLigne = myStream.readLine();
+            ligneQSL.clear();
+
+            for (QString uneCase : uneLigne.split(';'))
+            {
+                ligneQSL.push_back(uneCase);
+            }
+            monCsv.push_back(ligneQSL);
+        }
+        m_csvInitial.setEntite(monCsv);
+
+        myFile.close();
+    }
+
+    else
+    {
+        qDebug() << "File could not open\n";
+    }
+}
+
+
+//////////////////////////////////
+//////////////////////////////////
+//// ----- Q_PROPERTIES ----- ////
+//////////////////////////////////
+//////////////////////////////////
 
 
 void DataParser::setListeColonnes(const QStringList &listeDesColonnes)
@@ -26,7 +67,7 @@ void DataParser::setListeColonnes(const QStringList &listeDesColonnes)
         m_listeColonnes = listeDesColonnes;
         emit listeColonnesChanged();
 
-       message = "Nouvelle liste de colonnes chargée!";
+        message = "Nouvelle liste de colonnes chargée!";
     }
 
     else
@@ -43,7 +84,6 @@ QStringList DataParser::getListeColonnes() const
 {
     return m_listeColonnes;
 }
-
 
 
 void DataParser::setListeEntites(const QStringList &listeDesEntites)
@@ -112,3 +152,6 @@ QString DataParser::getMessageToUser() const
 {
     return m_messageToUser;
 }
+
+
+

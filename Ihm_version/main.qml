@@ -1,14 +1,16 @@
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import Qt.labs.platform 1.0
+import QtQuick.Dialogs 1.2
 
 
 ApplicationWindow {
+    id: root
     visible: true
-    width: 640
-    height: 480
+    width: 1000
+    height: 600
     title: qsTr("Hello World")
 
     header: ToolBar{
@@ -32,108 +34,59 @@ ApplicationWindow {
                 text: qsTr("⋮")
                 onClicked: menu.open()
             }
-
         }
     }
-//    MenuBar {
-//        id: menuBar
+Column{
+    spacing: 5
+    y: 5
+    x: 5
+    Row{
+        spacing: 10
 
+        MyButton{
+            id: openExplorerForCsv
 
+            text: "Select Csv File"
 
-//        Menu {
-//            id: fileMenu
-//            title: qsTr("File")
+            onClicked: {
+                explorerToPickCsv.visible= true
+            }
 
-//            MenuItem {
-//                text: qsTr("Zoom In")
-//                shortcut: StandardKey.ZoomIn
-//                onTriggered: zoomIn()
-//            }
+        }
 
-//            MenuItem {
-//                text: qsTr("Zoom Out")
-//                shortcut: StandardKey.ZoomOut
-//                onTriggered: zoomOut()
-//            }
-//        }
+        FileDialog{
+            id: explorerToPickCsv
+            visible: false
+            title: "Select a Csv"
 
-//        Menu {
-//            id: editMenu
-//            title: qsTr("&Edit")
-//            MenuItem {
-//                text: qsTr("Zoom In")
-//                shortcut: StandardKey.ZoomIn
-//                onTriggered: zoomIn()
-//            }
+            onAccepted: {
+                console.log("You selected: " + explorerToPickCsv.fileUrl)
+            }
 
-//            MenuItem {
-//                text: qsTr("Zoom Out")
-//                shortcut: StandardKey.ZoomOut
-//                onTriggered: zoomOut()
-//            }
-//        }
+            onRejected: {
+                console.log("Window closed")
+            }
 
-//        Menu {
-//            id: viewMenu
-//            title: qsTr("&View")
-//            MenuItem {
-//                text: qsTr("Zoom In")
-//                shortcut: StandardKey.ZoomIn
-//                onTriggered: zoomIn()
-//            }
+        }
 
-//            MenuItem {
-//                text: qsTr("Zoom Out")
-//                shortcut: StandardKey.ZoomOut
-//                onTriggered: zoomOut()
-//            }
-//        }
+        Rectangle{
 
-//        Menu {
-//            id: helpMenu
-//            title: qsTr("&Help")
-//            MenuItem {
-//                text: qsTr("Zoom In")
-//                shortcut: StandardKey.ZoomIn
-//                onTriggered: zoomIn()
-//            }
+            height: openExplorerForCsv.height
+            width: root.width - openExplorerForCsv.width - 20
+            color: "lightgrey"
 
-//            MenuItem {
-//                text: qsTr("Zoom Out")
-//                shortcut: StandardKey.ZoomOut
-//                onTriggered: zoomOut()
-//            }
-//        }
-//    }
-
-
-
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            console.log(qsTr('Clicked on background. Text: "' + textEdit.text + '"'))
+            Text{
+                text: explorerToPickCsv.fileUrl
+            }
         }
     }
 
+        Row{
+            MyButton{
+                onClicked: DataParser.loadFromCsv(explorerToPickCsv.fileUrl)
+            }
+        }
 
 
-    TextEdit {
-        id: textEdit
-        text: qsTr("Enter some text...")
-        verticalAlignment: Text.AlignVCenter
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: 20
-        onTextChanged: {
-            DataParser.setMessageToUser(text)
-            console.log("text changed")
-        }
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: -10
-            color: "transparent"
-            border.width: 1
-        }
-    }
+}
 }

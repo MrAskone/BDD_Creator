@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QStringList>
 
+#include "table.h"
+
 class DataParser : public QObject
 {
     Q_OBJECT
@@ -21,6 +23,10 @@ public:
     //NOTIFY => fonction Pour Emettre Un Signal
     //QML:  Context.nomPropriete
     //Context.nomPropriete = "xxxx" (=> appelle la fonction WRITE)
+
+    Q_INVOKABLE void loadFromCsv (QString urlOfCsv);
+
+
 
 signals:
 
@@ -51,6 +57,12 @@ private:
     QStringList m_contenuOfEntite;
 
     QString m_messageToUser;
+
+    /* END OF Q_PROPERTIES */
+
+    Table m_csvInitial;
+    std::vector<Table> m_initialEntities;
+//    std::vector<Table> m_RequiredCsv;
 
 
 };
